@@ -11,7 +11,7 @@ IMAGE_NAME = local/spiked1000g-$(BRANCH)
 .PHONY: any build run dev kill shell logs restart automation
 
 any:
-	$(eval CONTAINER_NAME = $(shell docker ps | awk '/anno-.*-$(USER)/ {print $$NF}'))
+	$(eval CONTAINER_NAME = $(shell docker ps | awk '/spiked1000g-.*-$(USER)/ {print $$NF}'))
 	@true
 
 build:
@@ -19,19 +19,11 @@ build:
 
 run:
 	docker run -d \
-	-e UTA_DB_URL=postgresql://uta_admin@localhost:5432/uta/$(UTA_VERSION) \
-	-e UTA_VERSION=$(UTA_VERSION) \
-	-e TARGET_DATA=/target_data \
-	$(ANNO_OPTS) \
-	--restart=always \
+	$(RUN_OPTS) \
 	--name $(CONTAINER_NAME) \
 	-p $(API_PORT):6000 \
-	-v $(shell pwd):/anno \
-	-v $(TARGETS_FOLDER):/targets \
-	-v $(TARGETS_OUT):/targets-out \
-	-v $(SAMPLE_REPO):/samples \
-	-v $(BUNDLE):/target_data/bundle \
-	-v $(SENSITIVE_DB):/target_data/sensitive-db \
+	-v $(shell pwd):/spiked1000g \
+	-v $(SAMPLES_1000g):/samples \
 	$(IMAGE_NAME)
 
 dev: run

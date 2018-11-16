@@ -37,10 +37,13 @@ RUN apt-get update && \
 ADD pip-requirements /dist/requirements.txt
 RUN pip install -r /dist/requirements.txt
 
+ENV PYTHONPATH /spiked1000g/src
+ENV PYTHONIOENCODING utf-8
+ENV PYTHONUNBUFFERED true
 
 # See .dockerignore for files that are ignored
 # COPY . /anno
-WORKDIR /anno
+WORKDIR /spiked1000g
 
 # Set supervisor as default cmd
 CMD /bin/bash -c "python src/api/main.py"
