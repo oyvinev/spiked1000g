@@ -1,0 +1,84 @@
+{
+    "OUS1": {
+        "patient": {
+            "sex": "male"
+        },
+        "variants": [
+            {
+                "chromosome": "6",
+                "position": 118880139,
+                "ref": "G",
+                "alt": "GG",
+                "genotype": "het"
+            }
+        ],
+        "phenotypes": ["0012378", "0001644", "0001279"]
+    },
+    "OUS2": {
+        "patient": {
+            "sex": "female"
+        },
+        "variants": [
+            {
+                "chromosome": "16",
+                "position": 23637719,
+                "ref": "C",
+                "alt": "G",
+                "genotype": "het"
+            }
+        ],
+        "phenotypes": ["0030075"]
+    },
+    "OUS3": {
+        "patient": {
+            "sex": "female"
+        },
+        "variants": [
+            {
+                "chromosome": "16",
+                "position": 23637719,
+                "ref": "C",
+                "alt": "G",
+                "genotype": "het"
+            },
+            {
+                "chromosome": "16",
+                "position": 23634414,
+                "ref": "G",
+                "alt": "A",
+                "genotype": "het"
+            }
+        ],
+        "phenotypes": ["0001511", "0011415", "0001629", "0009601", "0002885", "0007565"]
+    },
+    "OUS4": {
+        "patient": {
+            "sex": "female"
+        },
+        "variants": [
+            {
+                "chromosome": "1",
+                "position": 237947533,
+                "ref": "T",
+                "alt": "G",
+                "genotype": "het"
+            }
+        ],
+        "phenotypes": ["0001279", "0001645"]
+    },
+    "OUS5": {
+        "patient": {
+            "sex": "male"
+        },
+        "variants": [
+            {
+                "chromosome": "7",
+                "position": 138554427,
+                "ref": "G",
+                "alt": "T",
+                "genotype": "hom"
+            }
+        ],
+        "phenotypes": ["0007703", "0007893"]
+    }
+}
