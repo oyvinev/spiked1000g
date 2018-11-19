@@ -1,14 +1,8 @@
-import sys
-import os
-import argparse
-import time
 import random
 import glob
 import gzip
-import tempfile
 import json
 import hashlib
-import shutil
 import logging
 from cStringIO import StringIO
 
@@ -34,15 +28,8 @@ def get_vcf_lines(variant):
 
 
 def fetch_background(sex):
-    candidates = []
-    with open("/spiked1000g/src/integrated_call_samples_v3.20130502.ALL.panel", 'r') as f:
-        f.readline()
-        for l in f:
-            l = l.strip()
-            sample_id, _, _, s = l.split('\t')
-            if s == sex:
-                candidates.append(sample_id)
-
+    samples = json.load(open("/spiked1000g/src/1000g_samples.json", "r"))
+    candidates = [s for s in samples if samples[s]["sex"] == sex]
     sample_id = candidates[random.randint(0,len(candidates)-1)]
 
     return sample_id
@@ -111,8 +98,9 @@ def spike(case_id, sample_id, hash):
 
     cases = json.load(open("/spiked1000g/src/cases.json", 'r'))
     if not case_id:
-        print len(cases)
-        case = cases[cases.keys()[random.randint(0, len(cases))]]
+        N = random.randint(0, len(cases)-1)
+        case_id = cases.keys()[N]
+        case = cases[cases.keys()[N]]
     else:
         case = cases[case_id]
 
@@ -120,39 +108,16 @@ def spike(case_id, sample_id, hash):
     if not sample_id:
         sample_id = fetch_background(case["patient"]["sex"])
 
+
     if not hash:
         hash = hashlib.sha1(json.dumps(case)).hexdigest()[:10]+hashlib.sha1(sample_id).hexdigest()[:10]
 
+    assert samples[sample_id]["sex"] == case["patient"]["sex"], "{}!={}".format(samples[sample_id]["sex"], case["patient"]["sex"])
 
     log.info("case_id: {}".format(case_id))
     log.info("sample_id: {}".format(sample_id))
     log.info("hash: {}".format(hash))
 
     return generate_vcf(case, sample_id, hash)
-
-
-
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--case",)
-
-
-    case = sys.argv[1]
-    if len(sys.argv) > 2:
-        SEED = int(sys.argv[2])
-    else:
-        SEED = int(time.time()*1e6)
-
-    random.seed(SEED)
-
-    print generate_vcf(case)
-
-
-
-
-
-
 
 
