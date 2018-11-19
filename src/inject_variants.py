@@ -118,6 +118,6 @@ def spike(case_id, sample_id, hash):
     log.info("sample_id: {}".format(sample_id))
     log.info("hash: {}".format(hash))
 
-    return generate_vcf(case, sample_id, hash)
+    return generate_vcf(case, sample_id, hash), hash
 
 

@@ -20,6 +20,6 @@ class Spike(Resource):
         if case and sample_id:
             assert not seed
 
-        f = spike(case, sample_id, hash)
+        f, hash = spike(case, sample_id, hash)
 
-        return send_file(f)
+        return send_file(f, attachment_filename=hash+".vcf", as_attachment=True, mimetype='text/plain')
