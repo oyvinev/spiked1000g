@@ -101,11 +101,12 @@ def generate_vcf(case, sample_id, hash):
         data += get_vcf_lines(v)
 
     f = tempfile.NamedTemporaryFile(delete=False, suffix='.vcf')
-    f2 = tempfile.NamedTemporaryFile(delete=False, suffix='vcf.gz')
+    f2 = tempfile.NamedTemporaryFile(delete=False, suffix='.vcf.gz')
     f.write(data)
     f.close()
     f2.close()
     vcf = get_vcf(sample_id)
+
     os.system("bgzip {}".format(f.name))
     os.system("vcf-concat {} {} | vcf-sort -c | bgzip -c > {}".format(f.name+'.gz', vcf, f2.name))
 
@@ -145,11 +146,9 @@ def spike(case_id, sample_id, hash):
 
     assert samples[sample_id]["sex"] == case["patient"]["sex"], "{}!={}".format(samples[sample_id]["sex"], case["patient"]["sex"])
 
-    log.info("case_id: {}".format(case_id))
-    log.info("sample_id: {}".format(sample_id))
-    log.info("hash: {}".format(hash))
+    logging.info("Injecting case {} into {} ({})".format(case_id, sample_id, hash))
 
-    f, hash = generate_vcf(case, sample_id, hash), hash
-    return f, hash
+    f = generate_vcf(case, sample_id, hash)
+    return f, case_id, sample_id, hash
 
 
