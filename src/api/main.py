@@ -56,10 +56,11 @@ ApiV1(app, api).setup_api()
 if __name__ == "__main__":
     opts = {}
     opts["host"] = "0.0.0.0"
-    opts["threaded"] = True
     opts["port"] = int(os.getenv("API_PORT", "6000"))
-    opts["use_reloader"] = True
-    opts["reloader_interval"] = 3
-    opts["debug"] = True
+    opts["threaded"] = True
+    if os.environ.get('DEBUG') == 'true':
+        opts["use_reloader"] = True
+        opts["reloader_interval"] = 3
+        opts["debug"] = True
 
     app.run(**opts)
