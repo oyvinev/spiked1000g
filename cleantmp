@@ -1,1 +1,1 @@
-*/1 * * * * tmpreaper --test -v 2m /tmp
+*/1 * * * * tmpreaper -v 2m /tmp
