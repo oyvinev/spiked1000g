@@ -31,10 +31,10 @@ class RateLimit(object):
             RateLimit.REQUESTS = []
 
         if not self._allow(addr):
-            logging.info('Rejected request from {}'.format(addr))
+            log.info('Rejected request from {}'.format(addr))
             abort(429)
         else:
-            logging.info("Accepted request from {}".format(addr))
+            log.info("Accepted request from {}".format(addr))
 
 
 
@@ -61,9 +61,5 @@ class Spike(Resource):
             assert not seed
 
         f, case_id, sample_id, hash = spike(case, sample_id, hash)
-        print f
-        print case_id
-        print sample_id
-        print hash
 
         return send_file(f, attachment_filename=sample_id+"_"+case_id+".vcf.gz", as_attachment=True)

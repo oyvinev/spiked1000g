@@ -146,7 +146,7 @@ def spike(case_id, sample_id, hash):
 
     assert samples[sample_id]["sex"] == case["patient"]["sex"], "{}!={}".format(samples[sample_id]["sex"], case["patient"]["sex"])
 
-    logging.info("Injecting case {} into {} ({})".format(case_id, sample_id, hash))
+    log.info("Injecting case {} into {} ({})".format(case_id, sample_id, hash))
 
     f = generate_vcf(case, sample_id, hash)
     return f, case_id, sample_id, hash
