@@ -4,6 +4,8 @@ import gzip
 import json
 import hashlib
 import logging
+import tempfile
+import os
 from cStringIO import StringIO
 
 log = logging.getLogger('spiked1000g')
@@ -38,7 +40,7 @@ def get_vcf(sample_id):
     return glob.glob("/samples/"+sample_id+"*")[0]
 
 
-def generate_vcf(case, sample_id, hash):
+def generate_vcf_discarded(case, sample_id, hash):
     # cases = json.load(open("/spiked1000g/src/cases.json", 'r'))
     # case = cases[case]
     sex = case["patient"]["sex"]
@@ -69,6 +71,7 @@ def generate_vcf(case, sample_id, hash):
                         variants_to_write.append(i)
 
                 for i in reversed(sorted(variants_to_write)):
+
                     v = variants_vcf.pop(i)
                     output.write(v[2])
 
@@ -79,6 +82,34 @@ def generate_vcf(case, sample_id, hash):
 
     output.seek(0)
     return output
+
+
+def generate_vcf(case, sample_id, hash):
+    sex = case["patient"]["sex"]
+    variants = case["variants"]
+    phenotypes = case["phenotypes"]
+
+    header = "##fileformat=VCFv4.2\n"
+    header += "##HASH={}\n".format(hash)
+    header += "##BACKGROUND={}\n".format(sample_id)
+    header += "##SEX={}\n".format(sex)
+    header += "##PHENOTYPES={}\n".format('|'.join(phenotypes))
+    header += "##VARIANTS={}\n".format("|".join(["-".join(str(x) for x in [v["chromosome"], v["position"], v["ref"], v["alt"], v["genotype"]]) for v in variants]))
+    header += "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{}\n".format(sample_id)
+    data = header
+    for v in variants:
+        data += get_vcf_lines(v)
+
+    f = tempfile.NamedTemporaryFile(delete=False, suffix='.vcf')
+    f2 = tempfile.NamedTemporaryFile(delete=False, suffix='vcf.gz')
+    f.write(data)
+    f.close()
+    f2.close()
+    vcf = get_vcf(sample_id)
+    os.system("bgzip {}".format(f.name))
+    os.system("vcf-concat {} {} | vcf-sort -c | bgzip -c > {}".format(f.name+'.gz', vcf, f2.name))
+
+    return f2.name
 
 
 def get_case_and_sample(hash):
@@ -118,6 +149,7 @@ def spike(case_id, sample_id, hash):
     log.info("sample_id: {}".format(sample_id))
     log.info("hash: {}".format(hash))
 
-    return generate_vcf(case, sample_id, hash), hash
+    f, hash = generate_vcf(case, sample_id, hash), hash
+    return f, hash
 
 
