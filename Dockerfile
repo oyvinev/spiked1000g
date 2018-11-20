@@ -25,6 +25,8 @@ RUN apt-get update && \
     htop \
     vcftools \
     fontconfig \
+    crontab \
+    tmpreaper \
     watch && \
 
     # Additional tools
@@ -42,9 +44,18 @@ ENV PYTHONPATH /spiked1000g/src
 ENV PYTHONIOENCODING utf-8
 ENV PYTHONUNBUFFERED true
 
+# Add crontab file in the cron directory
+ADD crontab /etc/cron.d/cleantmp
+
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/cleantmp
+
+# Apply cron job
+RUN crontab /etc/cron.d/cleantmp
+
 # See .dockerignore for files that are ignored
 # COPY . /anno
 WORKDIR /spiked1000g
 
 # Set supervisor as default cmd
-CMD /bin/bash -c "python src/api/main.py"
+CMD cron && /bin/bash -c "python src/api/main.py"
