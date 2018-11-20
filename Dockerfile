@@ -23,6 +23,7 @@ RUN apt-get update && \
     less \
     sudo \
     htop \
+    vcftools \
     fontconfig \
     watch && \
 
