@@ -11,3 +11,4 @@ class ApiV1(object):
 
     def setup_api(self):
         self._add_resource(resources.spike.Spike, "/")
+        self._add_resource(resources.download.Download, "/download/<sample_id>")
